@@ -17,18 +17,24 @@ def part1(data):
 
 def part2(data):
     """Solve part 2."""
-    pattern = p.compile("mul({first:d},{second:d})")
-    do = re.compile(r"do\(\)")
-    end = re.compile(r"don't\(\)")
-    output = [results["first"] * results["second"] for results in pattern.findall(data)]
-    start_index = [m.start() for m in do.finditer(data)]
-    end_index = [m.start() for m in end.finditer(data)]
-    start_index.insert(0,0)
+   
+    mul = p.compile("mul({first:d},{second:d})")
+    pattern = re.compile(r"mul\(\d{1,3},\d{1,3}\)|do\(\)|don't\(\)")
+    output = re.findall(pattern, data)
     
-    #need to edit the list to get rid of repeats
+    head = True
+    answer = 0
+    for x in output:
+        if x == 'do()':
+            head = True
+        elif x == "don't()":
+            head = False
+        else:
+            if head:
+                temp = [results["first"] * results["second"] for results in mul.findall(x)]
+                answer += temp[0]
     
-    return [len(start_index), len(end_index)]
-    
+    return answer
 
 def solve(puzzle_input):
     """Solve the puzzle for the given input."""
